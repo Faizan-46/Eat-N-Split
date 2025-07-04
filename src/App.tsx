@@ -196,7 +196,7 @@ function FormAddFriend({ onAddFriend }: FormAddFriendProps) {
         onChange={(e) => setImage(e.target.value)}
       />
 
-      <Button onClick={() => {}}>Add</Button>
+      <Button>Add</Button>
     </form>
   );
 }
@@ -207,20 +207,17 @@ type FormSplitBillProps = {
 };
 
 function FormSplitBill({ selectedFriend, onSplitBill }: FormSplitBillProps) {
-  const [bill, setBill] = useState<number | ''>('');
-  const [paidByUser, setPaidByUser] = useState<number | ''>('');
-  const PaidByFriend =
-    typeof bill === 'number' && typeof paidByUser === 'number'
-      ? bill - paidByUser
-      : '';
+  const [bill, setBill] = useState<number>(0);
+  const [paidByUser, setPaidByUser] = useState<number>(0);
+  const PaidByFriend = bill - paidByUser;
 
   const [whoPaying, setWhoPaying] = useState<'user' | 'friend'>('user');
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (bill === '' || paidByUser === '') return;
+    if (bill === 0 || paidByUser === 0) return;
 
-    onSplitBill(whoPaying === 'user' ? PaidByFriend as number : -(paidByUser as number));
+    onSplitBill(whoPaying === 'user' ? PaidByFriend : -paidByUser);
   }
 
   return (
@@ -240,7 +237,7 @@ function FormSplitBill({ selectedFriend, onSplitBill }: FormSplitBillProps) {
         value={paidByUser}
         onChange={(e) =>
           setPaidByUser(
-            Number(e.target.value) > (bill || 0)
+            Number(e.target.value) > bill
               ? paidByUser
               : Number(e.target.value)
           )
